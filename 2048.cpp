@@ -13,7 +13,7 @@ int main(){
         movement(c);
         if ( placesLeft == 0 ) game = false;
     }
-    cout << "end";
+    end();
     return 0;
 }
 
