@@ -23,9 +23,8 @@ public:
     void random();
     void draw(State&);
 
-    int checkW(int, int, int);
-    int checkS(int, int, int);
-    int checkA(int, int, int);
-    int checkD(int, int, int);
+    int checkY(int, int, int, int);
+    int checkX(int, int, int, int);
 
+    void move(int, int, State&);
 };
