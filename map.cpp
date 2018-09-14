@@ -27,9 +27,9 @@ void Map::random() {
     placesLeft--;
 }
 
-void Map::draw() {
+void Map::draw(State& state) {
     system("cls");
-    random();
+    if ( state == Action ) random();
     for ( int y = 0; y < size; y++ ){
         for (int x = 0; x <= size; x++){
             if ( x == size) std::cout << "|";
@@ -45,6 +45,13 @@ void Map::draw() {
         std::cout << std::endl;
     }
     std::cout << "score: " << score << std::endl;
+    if ( state == Score ){
+        std::cout << std::endl << "Congratulations! You made 2048." << std::endl << "Do you want to contiune playing? Y/N" << std::endl;
+        char c;
+        std::cin >> c;
+        if ( c == 'Y' ) state = Action;
+        else state = End;
+    }
 }
 
 void Map::end() const {
@@ -69,8 +76,8 @@ void Map::end() const {
     }
 }
 
+int Map::getScore() const { return score; }
 int Map::getPlacesLeft() const { return placesLeft; }
-
 void Map::setPlacesLeft( int p ) { placesLeft = p; }
 
 int Map::checkW(int x, int y, int val){
@@ -105,7 +112,9 @@ int Map::checkD(int x, int y, int val){
     else return newX-1;
 }
 
-void Map::movement(char c){
+void Map::movement(char c, State& state){
+    int toScore = 0;
+    state = Pass;
     switch(c){
         case 'w':
             for ( int y = 1; y < size; y++ ){
@@ -115,10 +124,11 @@ void Map::movement(char c){
                         if ( y != newY){
                             if ( map[x][newY] != 0 ) {
                                 placesLeft++;
-                                score += 2*map[x][newY];
+                                toScore = 2*map[x][newY];
                             }
                             map[x][newY] += map[x][y];
                             map[x][y] = 0;
+                            state = Action;
                         }
                     }
                 }
@@ -132,10 +142,11 @@ void Map::movement(char c){
                         if ( y != newY){
                             if ( map[x][newY] != 0 ) {
                                 placesLeft++;
-                                score += 2*map[x][newY];
+                                toScore = 2*map[x][newY];
                             }
                             map[x][newY] += map[x][y];
                             map[x][y] = 0;
+                            state = Action;
                         }
                     }
                 }
@@ -149,10 +160,11 @@ void Map::movement(char c){
                         if ( x != newX){
                             if ( map[newX][y] != 0 ) {
                                 placesLeft++;
-                                score += 2*map[newX][y];
+                                toScore = 2*map[newX][y];
                             }
                             map[newX][y] += map[x][y];
                             map[x][y] = 0;
+                            state = Action;
                         }
                     }
                 }
@@ -166,10 +178,11 @@ void Map::movement(char c){
                         if ( x != newX){
                             if ( map[newX][y] != 0 ) {
                                 placesLeft++;
-                                score += 2*map[newX][y];
+                                toScore = 2*map[newX][y];
                             }
                             map[newX][y] += map[x][y];
                             map[x][y] = 0;
+                            state = Action;
                         }
                     }
                 }
@@ -178,4 +191,7 @@ void Map::movement(char c){
         default:
             break;
     }
+    if ( placesLeft == 0 ) state = End;
+    if ( toScore == 2048 ) state = Score;
+    score += toScore;
 }

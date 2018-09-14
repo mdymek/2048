@@ -1,23 +1,17 @@
 #include <iostream>
 #include <conio.h>
+//#include "game.hpp"
 #include "map.cpp"
-
-bool game = true;
 
 int main(){
     char c;
+    Map::State state = Map::Action;
     Map map(4);
-    while ( game ){
-        map.draw();
+    while ( state ){
+        map.draw(state);
         c = getch();
-        map.movement(c);
-        if ( map.getPlacesLeft() == 0 ) game = false;
+        map.movement(c, state);
     }
     map.end();
     return 0;
 }
-
-
-/*
-enum state
-*/

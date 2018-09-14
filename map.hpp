@@ -9,15 +9,22 @@ private:
     int size;
     int score;
 public:
+    enum State {
+        End = 0,
+        Action = 2,
+        Pass = 4,
+        Score = 8
+    };
     int placesLeft;
 
     Map ( int );
     ~Map();
 
     void random();
-    void draw();
+    void draw(State&);
     void end() const;
 
+    int getScore() const;
     int getPlacesLeft() const;
     void setPlacesLeft(int);
 
@@ -26,5 +33,5 @@ public:
     int checkA(int, int, int);
     int checkD(int, int, int);
 
-    void movement(char);
+    void movement(char, State&);
 };
