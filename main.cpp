@@ -11,7 +11,7 @@ int main(){
         map.draw();
         c = getch();
         map.movement(c);
-        if ( map.placesLeft == 0 ) game = false;
+        if ( map.getPlacesLeft() == 0 ) game = false;
     }
     map.end();
     return 0;
