@@ -1,17 +1,17 @@
 #include <iostream>
 #include <conio.h>
-//#include "game.hpp"
-#include "map.cpp"
+#include "game.cpp"
 
 int main(){
     char c;
     Map::State state = Map::Action;
-    Map map(4);
+    Map* map = new Map(4);
+    Game game(map);
     while ( state ){
-        map.draw(state);
-        c = getch();
-        map.movement(c, state);
+          game.play(state);
+          c = getch();
+          game.movement(c, state);
     }
-    map.end();
+    game.end();
     return 0;
 }
