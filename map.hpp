@@ -1,11 +1,12 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include "cell.cpp"
 
 class Map {
 private:
     friend class Game;
-    std::vector< std::vector <int> > map;
+    std::vector< std::vector < Cell > > map;
     int size;
     int score;
 public:
@@ -17,7 +18,7 @@ public:
     };
     int placesLeft;
 
-    Map ( int );
+    Map(int);
     ~Map();
 
     void random();
