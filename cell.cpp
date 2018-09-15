@@ -13,4 +13,4 @@ int Cell::value() const{ return val; }
 void Cell::change(){ changed = true; }
 void Cell::unchange(){ changed = false; }
 
-bool Cell::unchanged(){ return !changed; }
+bool Cell::isUnchanged(){ return !changed; }

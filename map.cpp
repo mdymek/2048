@@ -1,89 +1,102 @@
 #include "map.hpp"
 
-Map::Map( int S ) {
-    for ( int i = 0; i < S; i++ ){
+Map::Map( int size ) {
+    m_size = size;
+    m_score = 0;
+    m_placesLeft = size*size;
+
+    for ( int i = 0; i < size; i++ ){
         std::vector<Cell> row;
-        for ( int j = 0; j < S; j++ ){
+        for ( int j = 0; j < size; j++ ){
             Cell c;
             row.push_back(c);
         }
-        map.push_back(row);
+        m_map.push_back(row);
     }
-    size = S;
-    score = 0;
-    placesLeft = S*S;
 }
 
 Map::~Map(){}
 
-void Map::random() {
+void Map::random(){
     int x = rand() % 4;
     int y = rand() % 4;
-    while ( map[x][y].value() != 0 ){
+    while ( m_map[x][y].value() != 0 ){
         x = rand() % 4;
         y = rand() % 4;
     }
 
     int c = rand() % 3;
-    if ( c < 2 ) map[x][y].setVal(2);
-    else map[x][y].setVal(4);
-    placesLeft--;
+    if ( c < 2 ) m_map[x][y].setVal(2);
+    else m_map[x][y].setVal(4);
+    m_placesLeft--;
 }
 
-void Map::draw(State& state) {
+void Map::draw( State& state ) {
     system("cls");
     if ( state == Action ) random();
-    for ( int y = 0; y < size; y++ ){
-        for (int x = 0; x <= size; x++){
-            if ( x == size) std::cout << "|";
+    for ( int y = 0; y < m_size; y++ ){
+        for ( int x = 0; x <= m_size; x++ ){
+            if ( x == m_size ) std::cout << "|";
             else{
-                map[x][y].unchange();
-                if ( map[x][y].value() == 0 ) std::cout << "|    ";
+                m_map[x][y].unchange();
+                if ( m_map[x][y].value() == 0 ) std::cout << "|    ";
                 else {
-                    std::cout << "|" << " " << map[x][y].value();
-                    if ( map[x][y].value() < 10 ) std::cout << "  ";
-                    else if ( map[x][y].value() < 100 ) std::cout << " ";
+                    std::cout << "|" << " " << m_map[x][y].value();
+                    if ( m_map[x][y].value() < 10 ) std::cout << "  ";
+                    else if ( m_map[x][y].value() < 100 ) std::cout << " ";
                 }
             }
         }
         std::cout << std::endl << " ";
-        for ( int x = 0; x < size; x++ ) std::cout << "-----";
+        for ( int x = 0; x < m_size; x++ ) std::cout << "-----";
         std::cout << std::endl;
     }
-    std::cout << "score: " << score << std::endl;
+    std::cout << "m_score: " << m_score << std::endl;
 }
 
-int Map::checkY(int x, int y, int sY, int val){
-    int newY = y-sY;
-    if ( (newY >= 0 && newY < size) && map[x][newY].value() == 0 ) newY = checkY(x, newY, sY, val);
-
-    if ( newY >= 0 && newY < size && ((map[x][newY].value() == val && map[x][newY].unchanged()) || map[x][newY].value() == 0)) return newY;
-    else return newY+sY;
+bool Map::inRange( int v ) const{
+    return (v >= 0 && v < m_size);
 }
 
-int Map::checkX(int x, int y, int sX, int val){
-    int newX = x-sX;
-    if ( (newX >= 0 && newX < size) && map[newX][y].value() == 0 ) newX = checkX(newX, y, sX, val);
+int Map::checkY( int x, int y, int shift, int val ){
+    int newY = y-shift;
+    if (inRange(newY) && m_map[x][newY].value() == 0 ) newY = checkY(x, newY, shift, val);
 
-    if ( newX >= 0 && newX < size && ((map[newX][y].value() == val && map[newX][y].unchanged()) || map[newX][y].value() == 0)) return newX;
-    else return newX+sX;
+    if ( inRange(newY) &&  m_map[x][newY].isUnchanged() &&
+       ( m_map[x][newY].value() == val || m_map[x][newY].value() == 0 ))
+    {
+        return newY;
+    }
+    else return newY+shift;
 }
 
-void Map::move(int sX, int sY, State& state){
+int Map::checkX( int x, int y, int shift, int val ){
+    int newX = x-shift;
+    if ( inRange(newX) && m_map[newX][y].value() == 0 ) newX = checkX(newX, y, shift, val);
+
+    if ( inRange(newX) && m_map[newX][y].isUnchanged() &&
+       ( m_map[newX][y].value() == val || m_map[newX][y].value() == 0 ))
+    {
+        return newX;
+    }
+    else return newX+shift;
+}
+
+void Map::move( int shiftX, int shiftY, State& state ){
     int toScore = 0;
-    if ( sX == 0 ){
-        for ( int x = 0; x < size; x++ ){
-            for ( int y = (size + sY)%size; y >= 0 && y < size; y += sY ){
-                if ( map[x][y].value() != 0 ){
-                    int newY = checkY(x, y, sY, map[x][y].value());
-                    if ( y != newY){
-                        if ( map[x][newY].value() != 0 ) {
-                            placesLeft++;
-                            toScore = 2*map[x][newY].value();
-                            map[x][newY].change();
+    if ( shiftX == 0 ){
+        for ( int x = 0; x < m_size; x++ ){
+            for ( int y = (m_size + shiftY)%m_size; inRange(y); y += shiftY ){
+                if ( m_map[x][y].value() != 0 ){
+                    int newY = checkY(x, y, shiftY, m_map[x][y].value());
+                    if ( y != newY ){
+                        if ( m_map[x][newY].value() != 0 ) {
+                            m_placesLeft++;
+                            toScore = 2*m_map[x][newY].value();
+                            m_map[x][newY].change();
                         }
-                        map[x][newY].setVal(map[x][newY].value() + map[x][y].value());
-                        map[x][y].setVal(0);
+                        m_map[x][newY].setVal(m_map[x][newY].value() + m_map[x][y].value());
+                        m_map[x][y].setVal(0);
                         state = Map::Action;
                     }
                 }
@@ -91,25 +104,25 @@ void Map::move(int sX, int sY, State& state){
         }
     }
     else {
-        for ( int y = 0; y < size; y++ ){
-            for ( int x = (size + sX)%size; x >= 0 && x < size; x += sX ){
-                if ( map[x][y].value() != 0 ){
-                    int newX = checkX(x, y, sX, map[x][y].value());
-                    if ( x != newX){
-                        if ( map[newX][y].value() != 0 ) {
-                            placesLeft++;
-                            toScore = 2*map[newX][y].value();
-                            map[newX][y].change();
+        for ( int y = 0; y < m_size; y++ ){
+            for ( int x = (m_size + shiftX)%m_size; inRange(x); x += shiftX ){
+                if ( m_map[x][y].value() != 0 ){
+                    int newX = checkX(x, y, shiftX, m_map[x][y].value());
+                    if ( x != newX ){
+                        if ( m_map[newX][y].value() != 0 ) {
+                            m_placesLeft++;
+                            toScore = 2*m_map[newX][y].value();
+                            m_map[newX][y].change();
                         }
-                        map[newX][y].setVal(map[newX][y].value() + map[x][y].value());
-                        map[x][y].setVal(0);
+                        m_map[newX][y].setVal(m_map[newX][y].value() + m_map[x][y].value());
+                        m_map[x][y].setVal(0);
                         state = Map::Action;
                     }
                 }
             }
         }
     }
-    if ( placesLeft == 0 ) state = End;
+    if ( m_placesLeft == 0 ) state = End;
     if ( toScore == 2048 ) state = Score;
-    score += toScore;
+    m_score += toScore;
 }
