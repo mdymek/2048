@@ -5,10 +5,10 @@ Map::Map( int size ) {
     m_score = 0;
     m_placesLeft = size*size;
 
-    for ( int i = 0; i < size; i++ ){
+    for ( int y = 0; y < size; y++ ){
         std::vector<Cell> row;
-        for ( int j = 0; j < size; j++ ){
-            Cell c;
+        for ( int x = 0; x < size; x++ ){
+            Cell c(x, y);
             row.push_back(c);
         }
         m_map.push_back(row);
@@ -31,8 +31,8 @@ void Map::random(){
     m_placesLeft--;
 }
 
-void Map::draw( State& state ) {
-    system("cls");
+void Map::draw( State& state, sf::RenderWindow& window ) {
+    /*system("cls");
     if ( state == Action ) random();
     for ( int y = 0; y < m_size; y++ ){
         for ( int x = 0; x <= m_size; x++ ){
@@ -51,7 +51,20 @@ void Map::draw( State& state ) {
         for ( int x = 0; x < m_size; x++ ) std::cout << "-----";
         std::cout << std::endl;
     }
-    std::cout << "m_score: " << m_score << std::endl;
+    std::cout << "score: " << m_score << std::endl;*/
+    sf::Text text;
+    if ( state == Action ) random();
+    for ( int y = 0; y < m_size; y++ ){
+        for ( int x = 0; x < m_size; x++ ){
+            window.draw(m_map[x][y].getSquare());
+            text.setString(std::to_string(m_map[x][y].value()));
+            text.setPosition(sf::Vector2f(100*x + 50, 100*y + 50));
+            text.setFillColor(sf::Color::Red);
+            window.draw(text);
+        }
+    }
+    text.setString(std::to_string(m_score));
+    window.draw(text);
 }
 
 bool Map::inRange( int v ) const{

@@ -8,7 +8,7 @@ public:
     Game( Map* );
     ~Game();
 
-    void play( Map::State& );
+    void play( Map::State&, sf::RenderWindow& );
     void movement( char, Map::State& );
     void end() const;
 };

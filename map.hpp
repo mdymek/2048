@@ -22,7 +22,7 @@ public:
     ~Map();
 
     void random();
-    void draw( State& );
+    void draw( State&, sf::RenderWindow& );
 
     bool inRange( int ) const;
     int checkY( int, int, int, int );

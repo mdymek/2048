@@ -1,9 +1,14 @@
+#include <SFML/Graphics.hpp>
+
 class Cell {
 private:
     int val;
     bool changed;
+    sf::RectangleShape square;
+    int m_x;
+    int m_y;
 public:
-    Cell();
+    Cell( int, int );
     ~Cell();
 
     void setVal( int );
@@ -13,4 +18,5 @@ public:
     void unchange();
 
     bool isUnchanged();
+    sf::RectangleShape getSquare();
 };

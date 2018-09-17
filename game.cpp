@@ -3,8 +3,8 @@
 Game::Game( Map* area ) { m_area = area; }
 Game::~Game(){}
 
-void Game::play( Map::State& state ){
-    if ( state ) m_area->draw(state);
+void Game::play( Map::State& state, sf::RenderWindow& window ){
+    if ( state ) m_area->draw(state, window);
     if ( state == Map::Score ){
         std::cout << std::endl << "Congratulations! You made 2048." << std::endl << "Do you want to contiune playing? Y/N" << std::endl;
         char c;
