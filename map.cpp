@@ -91,7 +91,7 @@ int Map::checkX( int x, int y, int shift, int val ){
     else return newX+shift;
 }
 
-void Map::move( int shiftX, int shiftY, State& state ){
+void Map::move( int shiftX, int shiftY, State& state, int& noMove ){
     int toScore = 0;
     if ( shiftX == 0 ){
         for ( int x = 0; x < m_size; x++ ){
@@ -99,6 +99,7 @@ void Map::move( int shiftX, int shiftY, State& state ){
                 if ( m_map[x][y].value() != 0 ){
                     int newY = checkY(x, y, shiftY, m_map[x][y].value());
                     if ( y != newY ){
+                        noMove = 0;
                         if ( m_map[x][newY].value() != 0 ) {
                             m_placesLeft++;
                             toScore = 2*m_map[x][newY].value();
@@ -107,6 +108,10 @@ void Map::move( int shiftX, int shiftY, State& state ){
                         m_map[x][newY].setVal(m_map[x][newY].value() + m_map[x][y].value());
                         m_map[x][y].setVal(0);
                         state = Map::Action;
+                    }
+                    else {
+                        //vertical position 0
+                        noMove |= (1<<0);
                     }
                 }
             }
@@ -118,6 +123,7 @@ void Map::move( int shiftX, int shiftY, State& state ){
                 if ( m_map[x][y].value() != 0 ){
                     int newX = checkX(x, y, shiftX, m_map[x][y].value());
                     if ( x != newX ){
+                        noMove = 0;
                         if ( m_map[newX][y].value() != 0 ) {
                             m_placesLeft++;
                             toScore = 2*m_map[newX][y].value();
@@ -127,11 +133,15 @@ void Map::move( int shiftX, int shiftY, State& state ){
                         m_map[x][y].setVal(0);
                         state = Map::Action;
                     }
+                    else{
+                        //horizontal position 1
+                        noMove |= (1<<1);
+                    }
                 }
             }
         }
     }
-    if ( m_placesLeft == 0 ) state = End;
+    if ( noMove == 3 ) state = End;
     if ( toScore == 2048 ) state = Score;
     m_score += toScore;
 }

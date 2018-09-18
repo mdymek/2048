@@ -9,6 +9,7 @@ public:
     ~Game();
 
     void play( Map::State&, sf::RenderWindow& );
-    void movement( sf::Keyboard::Key, Map::State& );
-    void end() const;
+    void score( sf::RenderWindow& );
+    void end( sf::RenderWindow& ) const;
+    void movement( sf::Keyboard::Key, Map::State&, int& );
 };

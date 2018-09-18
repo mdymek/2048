@@ -1,15 +1,13 @@
-
 #include <conio.h>
 #include "game.cpp"
 
 int main(){
-    char c;
+    int noMove = 0;
     bool wait = false;
     Map::State state = Map::Action;
     Map* map = new Map(4);
     Game game(map);
 
-    sf::CircleShape cr(200);
     sf::RenderWindow window(sf::VideoMode(400,400), "2048");
 
     while ( window.isOpen() ){
@@ -26,15 +24,27 @@ int main(){
             }
             else if ( event.type == sf::Event::KeyPressed ){
                 wait = false;
-                if (event.key.code == sf::Keyboard::Escape){
+                if ( state == Map::End ){
                     window.close();
                 }
+                else if ( state == Map::Score ){
+                    if (event.key.code == sf::Keyboard::Y){
+                        state = Map::Action;
+                    }
+                    else {
+                        state = Map::End;
+                    }
+                }
                 else {
-                    game.movement(event.key.code, state);
+                    if (event.key.code == sf::Keyboard::Escape){
+                        window.close();
+                    }
+                    else {
+                        game.movement(event.key.code, state, noMove);
+                    }
                 }
             }
         }
     }
-    game.end();
     return 0;
 }

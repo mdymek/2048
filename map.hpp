@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cstdlib>
 #include <vector>
 #include "cell.cpp"
@@ -28,5 +27,5 @@ public:
     int checkY( int, int, int, int );
     int checkX( int, int, int, int );
 
-    void move( int, int, State& );
+    void move( int, int, State&, int& );
 };
