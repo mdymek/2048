@@ -14,19 +14,23 @@ void Game::play( Map::State& state, sf::RenderWindow& window ){
     }
 }
 
-void Game::movement( char c, Map::State& state ){
+void Game::movement( sf::Keyboard::Key direction, Map::State& state ){
         state = Map::Pass;
-        switch(c){
-            case 'w':
+        switch(direction){
+            case sf::Keyboard::Up:
+            case sf::Keyboard::W:
                 m_area->move(0,1,state);
                 break;
-            case 's':
+            case sf::Keyboard::Down:
+            case sf::Keyboard::S:
                 m_area->move(0,-1,state);
                 break;
-            case 'a':
+            case sf::Keyboard::Left:
+            case sf::Keyboard::A:
                 m_area->move(1,0,state);
                 break;
-            case 'd':
+            case sf::Keyboard::Right:
+            case sf::Keyboard::D:
                 m_area->move(-1,0,state);
                 break;
             default:

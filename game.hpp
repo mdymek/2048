@@ -9,6 +9,6 @@ public:
     ~Game();
 
     void play( Map::State&, sf::RenderWindow& );
-    void movement( char, Map::State& );
+    void movement( sf::Keyboard::Key, Map::State& );
     void end() const;
 };

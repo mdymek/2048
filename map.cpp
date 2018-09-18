@@ -1,5 +1,5 @@
 #include "map.hpp"
-
+#include <iostream>
 Map::Map( int size ) {
     m_size = size;
     m_score = 0;
@@ -31,40 +31,36 @@ void Map::random(){
     m_placesLeft--;
 }
 
+
 void Map::draw( State& state, sf::RenderWindow& window ) {
-    /*system("cls");
-    if ( state == Action ) random();
-    for ( int y = 0; y < m_size; y++ ){
-        for ( int x = 0; x <= m_size; x++ ){
-            if ( x == m_size ) std::cout << "|";
-            else{
-                m_map[x][y].unchange();
-                if ( m_map[x][y].value() == 0 ) std::cout << "|    ";
-                else {
-                    std::cout << "|" << " " << m_map[x][y].value();
-                    if ( m_map[x][y].value() < 10 ) std::cout << "  ";
-                    else if ( m_map[x][y].value() < 100 ) std::cout << " ";
-                }
-            }
-        }
-        std::cout << std::endl << " ";
-        for ( int x = 0; x < m_size; x++ ) std::cout << "-----";
-        std::cout << std::endl;
-    }
-    std::cout << "score: " << m_score << std::endl;*/
-    sf::Text text;
+    sf::Text number;
+    sf::Text score;
+    sf::Font font;
+
+    font.loadFromFile("ARBONNIE.ttf");
+    number.setFont(font);
+    score.setFont(font);
+
+    number.setFillColor(sf::Color::White);
+    score.setFillColor(sf::Color::White);
+
+    number.setStyle(sf::Text::Bold);
+    score.setStyle(sf::Text::Bold);
+
+    score.setCharacterSize(20);
+
     if ( state == Action ) random();
     for ( int y = 0; y < m_size; y++ ){
         for ( int x = 0; x < m_size; x++ ){
             window.draw(m_map[x][y].getSquare());
-            text.setString(std::to_string(m_map[x][y].value()));
-            text.setPosition(sf::Vector2f(100*x + 50, 100*y + 50));
-            text.setFillColor(sf::Color::Red);
-            window.draw(text);
+            number.setString(std::to_string(m_map[x][y].value()));
+            number.setPosition(sf::Vector2f(102*x + 50 - number.getLocalBounds().width, 102*y + 50 - number.getLocalBounds().height));
+            window.draw(number);
         }
     }
-    text.setString(std::to_string(m_score));
-    window.draw(text);
+    score.setString("score: " + std::to_string(m_score));
+    score.setPosition(sf::Vector2f(0,0));
+    window.draw(score);
 }
 
 bool Map::inRange( int v ) const{
