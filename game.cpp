@@ -76,19 +76,19 @@ void Game::movement( sf::Keyboard::Key direction, Map::State& state, int& noMove
     switch(direction){
         case sf::Keyboard::Up:
         case sf::Keyboard::W:
-            m_area->move(0, 1, state, noMove);
+            m_area->move(0, -1, state, noMove);
             break;
         case sf::Keyboard::Down:
         case sf::Keyboard::S:
-            m_area->move(0, -1, state, noMove);
+            m_area->move(0, 1, state, noMove);
             break;
         case sf::Keyboard::Left:
         case sf::Keyboard::A:
-            m_area->move(1, 0, state, noMove);
+            m_area->move(-1, 0, state, noMove);
             break;
         case sf::Keyboard::Right:
         case sf::Keyboard::D:
-            m_area->move(-1, 0, state, noMove);
+            m_area->move(1, 0, state, noMove);
             break;
         default:
             break;

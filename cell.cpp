@@ -9,8 +9,8 @@ Cell::Cell( int x, int y ){
     square.setOutlineThickness(1);
     square.setOutlineColor(sf::Color(199, 208, 221));
     square.setFillColor(colors[val]);
-    m_x = 102*y;
-    m_y = 102*x;
+    m_x = 102*x;
+    m_y = 102*y;
     square.setPosition(sf::Vector2f(m_x, m_y));
 }
 
